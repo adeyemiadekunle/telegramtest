@@ -1,0 +1,7 @@
+body {
+  /* background: var(--tg-theme-secondary-bg-color, white); */
+  border: 1px solid red;
+  /* height: var(--tg-viewport-height); */
+  /* width: var(--tg-viewport-width); */
+  /* max-height: var(--tg-viewport-stable-height); */
+}
