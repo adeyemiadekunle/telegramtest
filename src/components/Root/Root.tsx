@@ -8,36 +8,16 @@ import {
   useThemeParams,
   useViewport,
   bindMiniAppCSSVars,
-  bindThemeParamsCSSVars,
   bindViewportCSSVars,
+  postEvent,
 } from '@telegram-apps/sdk-react';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { AppRoot } from '@telegram-apps/telegram-ui';
-
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ErrorPage } from '@/components/ErrorPage';
 import { useTelegramMock } from '@/hooks/useTelegramMock';
 import { useDidMount } from '@/hooks/useDidMount';
-import { createContext, useContext } from 'react';
-
 import './styles.css';
-
-// Define the Viewport type
-type Viewport = {
-  height: number;
-  width: number;
-  // Add other properties as needed
-};
-
-const ViewportContext = createContext<Viewport | undefined>(undefined);
-// Custom hook to use the viewport context
-export function useAppViewport() {
-  const context = useContext(ViewportContext);
-  if (context === null) {
-    throw new Error('useAppViewport must be used within a ViewportProvider');
-  }
-  return context;
-}
 
 
 function App(props: PropsWithChildren) {
@@ -50,22 +30,25 @@ function App(props: PropsWithChildren) {
     return bindMiniAppCSSVars(miniApp, themeParams);
   }, [miniApp, themeParams]);
 
+  useEffect(() => {
+    // Post the expand event only once when the component mounts
+    postEvent('web_app_expand');
+  }, []);
+
+  const { isExpanded } = viewport || {};
 
   useEffect(() => {
     return viewport && bindViewportCSSVars(viewport);
   }, [viewport]);
 
-  const { height, width, isExpanded } = viewport || {};
+
   return (
-    <ViewportContext.Provider value={viewport}>
     <AppRoot
-      // appearance={miniApp.isDark ? 'dark' : 'light'}
       platform={['macos', 'ios'].includes(lp.platform) ? 'ios' : 'base'}
       className='h-full'
     >
       {props.children}
     </AppRoot>
-    </ViewportContext.Provider>
   );
 }
 
@@ -106,7 +89,7 @@ export function Root(props: PropsWithChildren) {
 
   return didMount ? (
     <ErrorBoundary fallback={ErrorPage}>
-      <RootInner {...props}/>
+      <RootInner {...props} />
     </ErrorBoundary>
   ) : <div className="root__loading">Loading</div>;
 }

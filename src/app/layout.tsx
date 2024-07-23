@@ -21,7 +21,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
             <div className='flex-1'>
               {children}
             </div>
-            <div className='border border-red-400 h-[50px]'>
+            <div className='h-[50px]'>
               Nav
             </div>
           </main>
