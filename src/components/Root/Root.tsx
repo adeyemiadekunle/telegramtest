@@ -9,7 +9,6 @@ import {
   useViewport,
   bindMiniAppCSSVars,
   bindViewportCSSVars,
-  postEvent,
 } from '@telegram-apps/sdk-react';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { AppRoot } from '@telegram-apps/telegram-ui';
@@ -17,7 +16,26 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ErrorPage } from '@/components/ErrorPage';
 import { useTelegramMock } from '@/hooks/useTelegramMock';
 import { useDidMount } from '@/hooks/useDidMount';
+import { createContext, useContext } from 'react';
+
 import './styles.css';
+
+// Define the Viewport type
+type Viewport = {
+  height: number;
+  width: number;
+  // Add other properties as needed
+};
+
+const ViewportContext = createContext<Viewport | undefined>(undefined);
+// Custom hook to use the viewport context
+export function useAppViewport() {
+  const context = useContext(ViewportContext);
+  if (context === null) {
+    throw new Error('useAppViewport must be used within a ViewportProvider');
+  }
+  return context;
+}
 
 
 function App(props: PropsWithChildren) {
@@ -30,7 +48,8 @@ function App(props: PropsWithChildren) {
     return bindMiniAppCSSVars(miniApp, themeParams);
   }, [miniApp, themeParams]);
 
-  postEvent('web_app_expand');
+
+  const { isExpanded } = viewport || {};
 
   useEffect(() => {
     return viewport && bindViewportCSSVars(viewport);
@@ -38,12 +57,14 @@ function App(props: PropsWithChildren) {
 
 
   return (
-    <AppRoot
-      platform={['macos', 'ios'].includes(lp.platform) ? 'ios' : 'base'}
-      className='h-full'
-    >
-      {props.children}
-    </AppRoot>
+    <ViewportContext.Provider value={viewport}>
+      <AppRoot
+        platform={['macos', 'ios'].includes(lp.platform) ? 'ios' : 'base'}
+        className='h-full'
+      >
+        {props.children}
+      </AppRoot>
+    </ViewportContext.Provider>
   );
 }
 
