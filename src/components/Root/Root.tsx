@@ -46,13 +46,10 @@ function App(props: PropsWithChildren) {
   const themeParams = useThemeParams();
   const viewport = useViewport();
 
-  // useEffect(() => {
-  //   return bindMiniAppCSSVars(miniApp, themeParams);
-  // }, [miniApp, themeParams]);
+  useEffect(() => {
+    return bindMiniAppCSSVars(miniApp, themeParams);
+  }, [miniApp, themeParams]);
 
-  // useEffect(() => {
-  //   return bindThemeParamsCSSVars(themeParams);
-  // }, [themeParams]);
 
   useEffect(() => {
     return viewport && bindViewportCSSVars(viewport);
@@ -64,6 +61,7 @@ function App(props: PropsWithChildren) {
     <AppRoot
       // appearance={miniApp.isDark ? 'dark' : 'light'}
       platform={['macos', 'ios'].includes(lp.platform) ? 'ios' : 'base'}
+      className='h-full'
     >
       {props.children}
     </AppRoot>

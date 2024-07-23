@@ -15,11 +15,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-    <body>
-      <Root>
-        {children}
-      </Root>
-    </body>
+      <body>
+        <Root>
+          <main className='flex flex-col h-full'>
+            <div className='flex-1'>
+              {children}
+            </div>
+            <div className='border border-red-400 h-[50px]'>
+              Nav
+            </div>
+          </main>
+        </Root>
+      </body>
     </html>
   );
 }
