@@ -30,12 +30,7 @@ function App(props: PropsWithChildren) {
     return bindMiniAppCSSVars(miniApp, themeParams);
   }, [miniApp, themeParams]);
 
-  useEffect(() => {
-    // Post the expand event only once when the component mounts
-    postEvent('web_app_expand');
-  }, []);
-
-  const { isExpanded } = viewport || {};
+  postEvent('web_app_expand');
 
   useEffect(() => {
     return viewport && bindViewportCSSVars(viewport);
